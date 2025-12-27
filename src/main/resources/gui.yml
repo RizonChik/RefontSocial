@@ -1,0 +1,87 @@
+items:
+  filler:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+
+  back:
+    material: ARROW
+    name: "§fНазад"
+    lore:
+      - "§7Вернуться"
+
+  next:
+    material: ARROW
+    name: "§fВперёд"
+    lore:
+      - "§7Следующая страница"
+
+  like:
+    material: LIME_DYE
+    name: "§aЛайк"
+    lore:
+      - "§7Поставить лайк игроку"
+      - "§7Текущий: §f%score%"
+
+  dislike:
+    material: RED_DYE
+    name: "§cДизлайк"
+    lore:
+      - "§7Поставить дизлайк игроку"
+      - "§7Текущий: §f%score%"
+
+  info:
+    material: PAPER
+    name: "§fИнформация"
+    lore:
+      - "§7Игрок: §f%target%"
+      - "§7Рейтинг: §f%score%"
+      - "§7Лайки: §a%likes%"
+      - "§7Дизлайки: §c%dislikes%"
+      - "§7Голосов: §f%votes%"
+
+profile_info:
+  material: PAPER
+  name: "§fПрофиль §7— §f%target%"
+  lore:
+    - "§7Рейтинг: §f%score% §7(место: §f%rank%§7)"
+    - "§7Лайки: §a%likes% §7/ Дизлайки: §c%dislikes%"
+    - "§7Голосов: §f%votes%"
+    - ""
+    - "§7Топ теги:"
+    - "%tags%"
+
+  profile_history:
+    material: BOOK
+    name: "§fИстория"
+    lore:
+      - "§7Последние оценки (до %limit%):"
+
+  category_score:
+    material: NETHER_STAR
+    name: "§fТоп по рейтингу"
+    lore:
+      - "§7Сортировка по score"
+
+  category_likes:
+    material: LIME_DYE
+    name: "§fСамый полезный"
+    lore:
+      - "§7Сортировка по лайкам"
+
+  category_dislikes:
+    material: RED_DYE
+    name: "§fСамый токсичный"
+    lore:
+      - "§7Сортировка по дизлайкам"
+
+  category_votes:
+    material: MAP
+    name: "§fСамый обсуждаемый"
+    lore:
+      - "§7Сортировка по голосам"
+
+  reason_tag:
+    material: NAME_TAG
+    name: "%reason%"
+    lore:
+      - "§7Выбрать тег"

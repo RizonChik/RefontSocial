@@ -1,0 +1,139 @@
+storage:
+  type: SQLITE # SQLITE | MYSQL | YAML
+
+  sqlite:
+    file: "data.db" # Файл SQLite в папке плагина
+
+  mysql:
+    host: "127.0.0.1"
+    port: 3306
+    database: "refontsocial"
+    username: "root"
+    password: "password"
+    useSSL: false
+    serverTimezone: "UTC"
+    params: "useUnicode=true&characterEncoding=utf8&autoReconnect=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false"
+    pool:
+      maximumPoolSize: 10
+      minimumIdle: 2
+      connectionTimeoutMs: 10000
+      idleTimeoutMs: 600000
+      maxLifetimeMs: 1800000
+
+rating:
+  scale:
+    min: 0.0
+    max: 5.0
+  defaultScore: 5.0
+  format: "#0.0"
+
+  # SIMPLE_RATIO: быстро скачет на 1-2 голосах
+  # BAYESIAN: сглаживает первые голоса (рекомендую)
+  algorithm: BAYESIAN
+  bayesian:
+    priorVotes: 12 # чем больше, тем стабильнее старт
+
+antiAbuse:
+  preventSelfVote: true
+
+  # Цель должна быть реальной (заходила/онлайн)
+  targetEligibility:
+    requireHasPlayedBefore: true  # запрет оценивать ники, которые не были на сервере
+    requireTargetOnline: false    # true = оценка только если цель онлайн
+
+  # Антинакрутка по IP (осторожно: семьи/один провайдер)
+  ipProtection:
+    enabled: false
+    mode: SAME_IP_DENY          # SAME_IP_DENY | SAME_IP_COOLDOWN
+    cooldownSeconds: 86400      # если mode = SAME_IP_COOLDOWN
+
+  cooldowns:
+    voteGlobalSeconds: 20
+    sameTargetSeconds: 600
+    changeVoteSeconds: 1800
+
+  requireInteraction:
+    enabled: true
+    radiusBlocks: 7.0
+    requiredSecondsNear: 8
+    interactionValidSeconds: 600
+    taskPeriodTicks: 40
+
+  dailyLimit:
+    enabled: true
+    maxVotesPerDay: 20
+
+reasons:
+  enabled: true
+  # показывать GUI выбора причины после лайка/дизлайка
+  requireReason: false
+  maxReasonLength: 24
+
+  # готовые теги (ключ -> отображение)
+  tags:
+    helpful: "§aпомог"
+    polite: "§aадекватный"
+    toxic: "§cтоксик"
+    scam: "§cобман"
+    rp: "§bRP-игрок"
+    trader: "§eторговец"
+    newbie: "§7новичок"
+
+profile:
+  history:
+    enabled: true
+    showVoterNameMode: PERMISSION # ANONYMOUS | PERMISSION | ALWAYS
+    showVoterNamePermission: "refontsocial.admin"
+    limit: 10
+    showVoterName: false # если true — покажет автора (лучше оставить false)
+  topTags:
+    enabled: true
+    limit: 3
+
+gui:
+  top:
+    title: "§x§C§4§8§4§E§2Р§x§C§4§8§7§E§1е§x§C§4§8§A§E§0п§x§C§4§8§D§D§Fу§x§C§4§9§0§D§Eт§x§C§3§9§2§D§Cа§x§C§3§9§5§D§Bц§x§C§3§9§8§D§Aи§x§C§3§9§B§D§9я §7• §fТоп"
+    size: 54
+    pageSize: 45
+
+  rate:
+    title: "§x§C§4§8§4§E§2О§x§C§4§8§9§E§0ц§x§C§4§8§D§D§Eе§x§C§3§9§2§D§Dн§x§C§3§9§6§D§Bк§x§C§3§9§B§D§9а"
+    size: 27
+
+  profile:
+    title: "§x§C§4§8§4§E§2П§x§C§4§8§8§E§1р§x§C§4§8§C§E§0о§x§C§4§9§0§D§Fф§x§C§3§9§4§D§Eи§x§C§3§9§8§D§Dл§x§C§3§9§B§D§9ь"
+    size: 54
+
+  reasons:
+    title: "§x§C§4§8§4§E§2П§x§C§4§8§8§E§1р§x§C§4§8§C§E§0и§x§C§4§9§0§D§Fч§x§C§3§9§4§D§Eи§x§C§3§9§8§D§Dн§x§C§3§9§B§D§9а"
+    size: 54
+
+  categoryTop:
+    title: "§x§C§4§8§4§E§2Т§x§C§4§8§8§E§1о§x§C§4§8§C§E§0п §7• §f%category%"
+    size: 54
+    pageSize: 45
+
+performance:
+  cache:
+    enabled: true
+    expireSeconds: 30
+
+placeholders:
+  notFound: "§7Не найден"
+  topMax: 200
+
+libraries:
+  enabled: true
+  folder: "libs"
+  repositories:
+    - "https://repo1.maven.org/maven2/"
+  sqlite:
+    enabled: true
+    groupId: "org.xerial"
+    artifactId: "sqlite-jdbc"
+    version: "3.46.0.0"
+  mysql:
+    enabled: true
+    groupId: "com.mysql"
+    artifactId: "mysql-connector-j"
+    version: "8.0.33"

@@ -1,0 +1,23 @@
+name: RefontSocial
+version: '${project.version}'
+main: ru.rizonchik.refontsocial.RefontSocial
+api-version: '1.16'
+softdepend: [PlaceholderAPI]
+
+commands:
+  reputation:
+    aliases: [rep, rating, social]
+    description: Reputation / Social rating
+    usage: /rep help
+
+permissions:
+  refontsocial.use:
+    default: true
+  refontsocial.admin:
+    default: op
+  refontsocial.bypass.cooldown:
+    default: op
+  refontsocial.bypass.interaction:
+    default: op
+  refontsocial.bypass.ip:
+    default: op

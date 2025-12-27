@@ -1,0 +1,41 @@
+prefix: "§x§C§4§8§4§E§2R§x§C§4§8§6§E§1e§x§C§4§8§8§E§0f§x§C§4§8§A§E§0o§x§C§4§8§C§D§Fn§x§C§4§8§E§D§Et§x§C§3§9§1§D§DS§x§C§3§9§3§D§Co§x§C§3§9§5§D§Bc§x§C§3§9§7§D§Bi§x§C§3§9§9§D§Aa§x§C§3§9§B§D§9l §8» §r"
+
+noPermission: "%prefix%§cНет прав."
+playerOnly: "%prefix%§cТолько для игроков."
+playerNotFound: "%prefix%§cИгрок не найден."
+selfVoteDenied: "%prefix%§cСебя оценивать нельзя."
+
+cooldownGlobal: "%prefix%§cПодожди §f%seconds%§c сек."
+cooldownTarget: "%prefix%§cЭтого игрока можно оценить снова через §f%seconds%§c сек."
+cooldownChangeVote: "%prefix%§cСменить голос можно через §f%seconds%§c сек."
+
+interactionRequired: "%prefix%§cНужно сначала немного повзаимодействовать рядом с игроком."
+dailyLimit: "%prefix%§cЛимит оценок на сегодня исчерпан (§f%limit%§c)."
+
+voteLikeDone: "%prefix%§aТы поставил §fлайк §aигроку §f%target%§a. Рейтинг: §f%score%§a."
+voteDislikeDone: "%prefix%§aТы поставил §fдизлайк §aигроку §f%target%§a. Рейтинг: §f%score%§a."
+voteChanged: "%prefix%§eТвой голос для §f%target% §eизменён. Рейтинг: §f%score%§e."
+voteRemoved: "%prefix%§eТвой голос для §f%target% §eубран. Рейтинг: §f%score%§e."
+
+targetNeverPlayed: "%prefix%§cНельзя оценить игрока, который ни разу не заходил на сервер."
+targetMustBeOnline: "%prefix%§cНельзя оценить игрока, пока он оффлайн."
+
+ipDenied: "%prefix%§cНельзя оценивать игрока с таким же IP."
+ipCooldown: "%prefix%§cПодожди §f%seconds%§c сек. (IP-защита)"
+
+reasonChooseTitle: "%prefix%§7Выбери причину (тег) для оценки игрока §f%target%§7."
+reasonSaved: "%prefix%§aПричина сохранена: §f%reason%§a."
+reasonRequired: "%prefix%§cНужно выбрать причину."
+
+showSelf: "%prefix%§7Твой рейтинг: §f%score%§7 (§a+%likes%§7/§c-%dislikes%§7, всего: §f%votes%§7)"
+showOther: "%prefix%§7Рейтинг §f%target%§7: §f%score%§7 (§a+%likes%§7/§c-%dislikes%§7, всего: §f%votes%§7)"
+
+help:
+  - "%prefix%§f/rep §7— показать свой рейтинг"
+  - "%prefix%§f/rep <ник> §7— открыть меню оценки"
+  - "%prefix%§f/rep like <ник> §7— лайк (с причиной)"
+  - "%prefix%§f/rep dislike <ник> §7— дизлайк (с причиной)"
+  - "%prefix%§f/rep profile <ник> §7— профиль игрока"
+  - "%prefix%§f/rep top §7— топ по рейтингу"
+  - "%prefix%§f/rep top score|likes|dislikes|votes §7— топ по категории"
+  - "%prefix%§f/rep reload §7— перезагрузка (админ)"
