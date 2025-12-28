@@ -27,6 +27,8 @@ reasonChooseTitle: "%prefix%§7Выбери причину (тег) для оц�
 reasonSaved: "%prefix%§aПричина сохранена: §f%reason%§a."
 reasonRequired: "%prefix%§cНужно выбрать причину."
 
+reloaded: "%prefix%§aПерезагружено."
+
 showSelf: "%prefix%§7Твой рейтинг: §f%score%§7 (§a+%likes%§7/§c-%dislikes%§7, всего: §f%votes%§7)"
 showOther: "%prefix%§7Рейтинг §f%target%§7: §f%score%§7 (§a+%likes%§7/§c-%dislikes%§7, всего: §f%votes%§7)"
 

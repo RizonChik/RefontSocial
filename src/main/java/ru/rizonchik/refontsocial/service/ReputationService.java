@@ -292,18 +292,13 @@ public final class ReputationService {
         }
 
         if (requireHasPlayedBefore) {
-            if (off == null) {
-                voter.sendMessage(Colors.msg(plugin, "targetNotFound"));
-                return;
-            }
-
-            boolean hasPlayedBefore = false;
+            boolean played = false;
             try {
-                hasPlayedBefore = off.hasPlayedBefore();
+                played = (off != null && off.hasPlayedBefore());
             } catch (Throwable ignored) {
             }
 
-            if (!hasPlayedBefore) {
+            if (!played && (off == null || !off.isOnline())) {
                 voter.sendMessage(Colors.msg(plugin, "targetNeverPlayed"));
                 return;
             }

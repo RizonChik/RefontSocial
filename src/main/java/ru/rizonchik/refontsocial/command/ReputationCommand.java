@@ -52,7 +52,7 @@ public final class ReputationCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             plugin.reloadPlugin();
-            player.sendMessage(Colors.prefix(plugin) + "§§aReloaded.");
+            player.sendMessage(Colors.msg(plugin, "reloaded"));
             return true;
         }
 
