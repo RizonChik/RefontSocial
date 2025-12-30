@@ -10,10 +10,11 @@ import ru.rizonchik.refontsocial.service.ReputationService;
 import ru.rizonchik.refontsocial.storage.model.PlayerRep;
 import ru.rizonchik.refontsocial.util.ItemUtil;
 import ru.rizonchik.refontsocial.util.NumberUtil;
+import xyz.overdyn.dyngui.abstracts.AbstractGuiLayer;
 
 import java.util.UUID;
 
-public final class RateGui extends AbstractGui {
+public final class RateGui extends AbstractGuiLayer {
 
     private final RefontSocial plugin;
     private final ReputationService service;

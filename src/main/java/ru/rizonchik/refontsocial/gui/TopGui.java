@@ -14,12 +14,13 @@ import ru.rizonchik.refontsocial.util.Colors;
 import ru.rizonchik.refontsocial.util.ItemUtil;
 import ru.rizonchik.refontsocial.util.NumberUtil;
 import ru.rizonchik.refontsocial.util.YamlUtil;
+import xyz.overdyn.dyngui.abstracts.AbstractGuiLayer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public final class TopGui extends AbstractGui {
+public final class TopGui extends AbstractGuiLayer {
 
     private final RefontSocial plugin;
     private final ReputationService service;

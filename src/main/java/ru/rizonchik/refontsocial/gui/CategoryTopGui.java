@@ -1,5 +1,7 @@
 package ru.rizonchik.refontsocial.gui;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -7,18 +9,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 import ru.rizonchik.refontsocial.RefontSocial;
 import ru.rizonchik.refontsocial.service.ReputationService;
 import ru.rizonchik.refontsocial.storage.TopCategory;
 import ru.rizonchik.refontsocial.storage.model.PlayerRep;
 import ru.rizonchik.refontsocial.util.ItemUtil;
 import ru.rizonchik.refontsocial.util.NumberUtil;
+import xyz.overdyn.dyngui.abstracts.AbstractGuiLayer;
+import xyz.overdyn.dyngui.items.GuiItem;
+import xyz.overdyn.dyngui.items.ItemWrapper;
+import xyz.overdyn.dyngui.policy.GuiPolicy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public final class CategoryTopGui extends AbstractGui {
+public final class CategoryTopGui extends AbstractGuiLayer {
 
     private final RefontSocial plugin;
     private final ReputationService service;
@@ -26,14 +31,13 @@ public final class CategoryTopGui extends AbstractGui {
     private final int page;
 
     public CategoryTopGui(RefontSocial plugin, ReputationService service, TopCategory category, int page) {
+        super(54, Component.text("empty title"), GuiPolicy.Factories.HIGHEST);
+
         this.plugin = plugin;
         this.service = service;
         this.category = category;
         this.page = page;
-    }
 
-    @Override
-    public void open(Player player) {
         String titleTpl = plugin.getConfig().getString("gui.categoryTop.title", "Топ • %category%");
         String title = titleTpl.replace("%category%", categoryRu(category));
 
@@ -41,39 +45,35 @@ public final class CategoryTopGui extends AbstractGui {
         if (size < 9) size = 54;
         if (size % 9 != 0) size = 54;
 
-        inventory = Bukkit.createInventory(null, size, title);
+        setSize(size);
+        setTitle(Component.text(title));
+    }
 
+    public void openGui(Player player) {
         ItemStack filler = ItemUtil.fromGui(plugin, "filler");
-        for (int i = 0; i < inventory.getSize(); i++) inventory.setItem(i, filler);
+        registerItem(new GuiItem(filler).addSlots(Arrays.asList(46, 47, 48, 19, 50, 51, 52)));
 
-        ItemStack loading = new ItemStack(Material.PAPER);
-        ItemMeta meta = loading.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName("§fЗагрузка...");
-            loading.setItemMeta(meta);
-        }
-        inventory.setItem(22, loading);
+        registerItem(
+            new GuiItem(
+                ItemWrapper.builder(Material.PAPER)
+                    .displayName(Component.text("Загрузка...", NamedTextColor.WHITE))
+                    .build()
+            ).addSlot(22)
+        );
 
-        inventory.setItem(inventory.getSize() - 9, ItemUtil.fromGui(plugin, "back"));
-        inventory.setItem(inventory.getSize() - 1, ItemUtil.fromGui(plugin, "next"));
+        registerItem(new GuiItem(ItemUtil.fromGui(plugin, "back")).addSlot(getInventory().getSize() - 9));
+        registerItem(new GuiItem(ItemUtil.fromGui(plugin, "next")).addSlot(getInventory().getSize() - 1));
 
-        player.openInventory(inventory);
+        openGui(player);
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        scheduler.runTaskAsync(() -> {
             int pageSize = plugin.getConfig().getInt("gui.categoryTop.pageSize", 45);
             if (pageSize < 1) pageSize = 45;
 
             int offset = (page - 1) * pageSize;
             List<PlayerRep> top = plugin.getStorage().getTop(category, pageSize, offset);
 
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                if (!player.isOnline()) return;
-                if (player.getOpenInventory() == null) return;
-                if (player.getOpenInventory().getTopInventory() == null) return;
-                if (!player.getOpenInventory().getTopInventory().equals(inventory)) return;
-
-                for (int i = 0; i < 45; i++) inventory.setItem(i, null);
-
+            scheduler.runTask(() -> {
                 for (int i = 0; i < top.size() && i < 45; i++) {
                     PlayerRep rep = top.get(i);
 
@@ -105,7 +105,7 @@ public final class CategoryTopGui extends AbstractGui {
                     }
 
                     head.setItemMeta(sm);
-                    inventory.setItem(i, head);
+                    registerItem(new GuiItem(head).addSlot(i));
                 }
             });
         });

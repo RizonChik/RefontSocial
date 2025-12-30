@@ -13,11 +13,12 @@ import ru.rizonchik.refontsocial.storage.model.PlayerRep;
 import ru.rizonchik.refontsocial.storage.model.VoteLogEntry;
 import ru.rizonchik.refontsocial.util.ItemUtil;
 import ru.rizonchik.refontsocial.util.NumberUtil;
+import xyz.overdyn.dyngui.abstracts.AbstractGuiLayer;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public final class ProfileGui extends AbstractGui {
+public final class ProfileGui extends AbstractGuiLayer {
 
     private final RefontSocial plugin;
     private final ReputationService service;

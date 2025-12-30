@@ -29,6 +29,11 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+        <repository>
+            <id>OverdynMc-releases</id>
+            <name>OverdynMc Repository</name>
+            <url>https://repo.overdyn.xyz/releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -64,6 +69,12 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>8.0.33</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>xyz.overdyn</groupId>
+            <artifactId>dyngui</artifactId>
+            <version>1.0.2.0</version>
         </dependency>
     </dependencies>
 
