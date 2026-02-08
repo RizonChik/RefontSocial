@@ -87,7 +87,7 @@ public final class RefontSocial extends JavaPlugin {
     public void reloadPlugin() {
         reloadConfig();
 
-        String storageTypeStr = getConfig().getString("storage.type", "SQLITE")
+        String storageTypeStr = getConfig().getString("storage.type", "YAML")
                 .toUpperCase(Locale.ROOT);
 
         LibraryManager libs = new LibraryManager(this);
@@ -148,7 +148,7 @@ public final class RefontSocial extends JavaPlugin {
         try {
             storageType = StorageType.valueOf(storageTypeStr);
         } catch (Exception e) {
-            storageType = StorageType.SQLITE;
+            storageType = StorageType.YAML;
         }
 
         if (storageType == StorageType.MYSQL) {
@@ -164,13 +164,16 @@ public final class RefontSocial extends JavaPlugin {
         reputationService = new ReputationService(this, storage);
         guiService = new GuiService(this, reputationService);
 
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
-                try {
-                    storage.markSeen(p.getUniqueId(), p.getName(), null);
-                } catch (Throwable ignored) {
+        Bukkit.getScheduler().runTask(this, () -> {
+            final java.util.List<org.bukkit.entity.Player> online = new java.util.ArrayList<>(Bukkit.getOnlinePlayers());
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                for (org.bukkit.entity.Player p : online) {
+                    try {
+                        storage.markSeen(p.getUniqueId(), p.getName(), null);
+                    } catch (Throwable ignored) {
+                    }
                 }
-            }
+            });
         });
 
         getServer().getPluginManager().registerEvents(guiService, this);

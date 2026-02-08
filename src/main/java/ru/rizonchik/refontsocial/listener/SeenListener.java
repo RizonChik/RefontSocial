@@ -1,11 +1,13 @@
 package ru.rizonchik.refontsocial.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import ru.rizonchik.refontsocial.RefontSocial;
 import ru.rizonchik.refontsocial.util.SecurityUtil;
+import ru.rizonchik.refontsocial.util.SaltStore;
 
 public final class SeenListener implements Listener {
 
@@ -26,9 +28,14 @@ public final class SeenListener implements Listener {
         } catch (Throwable ignored) {
         }
 
-        String salt = ru.rizonchik.refontsocial.util.SaltStore.getOrCreate(plugin);
-        String ipHash = (ip == null) ? null : SecurityUtil.sha256(ip + "|" + salt);
+        final String ipFinal = ip;
+        final String name = p.getName();
+        final java.util.UUID uuid = p.getUniqueId();
 
-        plugin.getStorage().markSeen(p.getUniqueId(), p.getName(), ipHash);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            String salt = SaltStore.getOrCreate(plugin);
+            String ipHash = (ipFinal == null) ? null : SecurityUtil.sha256(ipFinal + "|" + salt);
+            plugin.getStorage().markSeen(uuid, name, ipHash);
+        });
     }
 }

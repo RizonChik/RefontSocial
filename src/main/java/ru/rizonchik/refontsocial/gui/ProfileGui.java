@@ -56,10 +56,11 @@ public final class ProfileGui extends AbstractGui {
         viewer.openInventory(inventory);
 
         final Player viewerFinal = viewer;
+        final boolean includeVoter = service.shouldShowVoterName(viewerFinal);
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             PlayerRep rep = service.getOrCreate(target, targetName);
-            int rank = plugin.getStorage().getRank(target);
+            int rank = service.getRankCached(target);
             String rankStr = (rank > 0)
                     ? String.valueOf(rank)
                     : plugin.getConfig().getString("placeholders.notFound", "не найден");
@@ -73,7 +74,6 @@ public final class ProfileGui extends AbstractGui {
             int limit = plugin.getConfig().getInt("profile.history.limit", 10);
             if (limit < 1) limit = 10;
 
-            boolean includeVoter = service.shouldShowVoterName(viewerFinal);
             List<VoteLogEntry> history = historyEnabled
                     ? plugin.getStorage().getRecentVotes(target, limit, includeVoter)
                     : Collections.emptyList();

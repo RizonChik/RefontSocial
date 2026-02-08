@@ -3,6 +3,7 @@ package ru.rizonchik.refontsocial.placeholder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import ru.rizonchik.refontsocial.RefontSocial;
+import ru.rizonchik.refontsocial.storage.TopCategory;
 import ru.rizonchik.refontsocial.storage.model.PlayerRep;
 import ru.rizonchik.refontsocial.util.NumberUtil;
 
@@ -52,14 +53,14 @@ public final class ReputationExpansion extends PlaceholderExpansion {
         UUID uuid = player.getUniqueId();
 
         if (p.equals("score") || p.equals("likes") || p.equals("dislikes") || p.equals("votes") || p.equals("rank")) {
-            PlayerRep rep = plugin.getReputationService().getOrCreate(uuid, player.getName() != null ? player.getName() : "Player");
+            PlayerRep rep = plugin.getReputationService().getOrCreate(uuid, player.getName() != null ? player.getName() : "Игрок");
 
             if (p.equals("score")) return NumberUtil.formatScore(plugin, rep.getScore());
             if (p.equals("likes")) return String.valueOf(rep.getLikes());
             if (p.equals("dislikes")) return String.valueOf(rep.getDislikes());
             if (p.equals("votes")) return String.valueOf(rep.getVotes());
 
-            int rank = plugin.getStorage().getRank(uuid);
+            int rank = plugin.getReputationService().getRankCached(uuid);
             return rank > 0 ? String.valueOf(rank) : notFound;
         }
 
@@ -70,14 +71,14 @@ public final class ReputationExpansion extends PlaceholderExpansion {
         if (maxN < 1) maxN = 1;
         if (q.place < 1 || q.place > maxN) return notFound;
 
-        List<PlayerRep> top = plugin.getStorage().getTop(q.place, 0);
+        List<PlayerRep> top = plugin.getReputationService().getTopCached(TopCategory.SCORE, maxN, 0);
         if (top == null || top.size() < q.place) return notFound;
 
         PlayerRep rep = top.get(q.place - 1);
 
         String name = rep.getName();
         if (name == null || name.trim().isEmpty()) {
-            name = plugin.getStorage().getLastKnownName(rep.getUuid());
+            name = plugin.getReputationService().getNameCached(rep.getUuid());
         }
         if (name == null || name.trim().isEmpty()) {
             name = notFound;

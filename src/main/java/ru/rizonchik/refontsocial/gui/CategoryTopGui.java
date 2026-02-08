@@ -15,7 +15,9 @@ import ru.rizonchik.refontsocial.util.ItemUtil;
 import ru.rizonchik.refontsocial.util.NumberUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public final class CategoryTopGui extends AbstractGui {
@@ -24,6 +26,8 @@ public final class CategoryTopGui extends AbstractGui {
     private final ReputationService service;
     private final TopCategory category;
     private final int page;
+    private final Map<Integer, UUID> slotTargets = new HashMap<>();
+    private final Map<Integer, String> slotNames = new HashMap<>();
 
     public CategoryTopGui(RefontSocial plugin, ReputationService service, TopCategory category, int page) {
         this.plugin = plugin;
@@ -64,7 +68,19 @@ public final class CategoryTopGui extends AbstractGui {
             if (pageSize < 1) pageSize = 45;
 
             int offset = (page - 1) * pageSize;
-            List<PlayerRep> top = plugin.getStorage().getTop(category, pageSize, offset);
+            List<PlayerRep> top = service.getTopCached(category, pageSize, offset);
+            List<String> names = new ArrayList<>(top.size());
+
+            for (PlayerRep rep : top) {
+                String name = rep.getName();
+                if (name == null || name.trim().isEmpty()) {
+                    name = service.getNameCached(rep.getUuid());
+                }
+                if (name == null || name.trim().isEmpty()) {
+                    name = rep.getUuid().toString().substring(0, 8);
+                }
+                names.add(name);
+            }
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (!player.isOnline()) return;
@@ -73,6 +89,8 @@ public final class CategoryTopGui extends AbstractGui {
                 if (!player.getOpenInventory().getTopInventory().equals(inventory)) return;
 
                 for (int i = 0; i < 45; i++) inventory.setItem(i, null);
+                slotTargets.clear();
+                slotNames.clear();
 
                 for (int i = 0; i < top.size() && i < 45; i++) {
                     PlayerRep rep = top.get(i);
@@ -80,13 +98,7 @@ public final class CategoryTopGui extends AbstractGui {
                     ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                     SkullMeta sm = (SkullMeta) head.getItemMeta();
 
-                    String name = rep.getName();
-                    if (name == null) name = service.getName(rep.getUuid());
-                    if (name == null) {
-                        OfflinePlayer off = Bukkit.getOfflinePlayer(rep.getUuid());
-                        name = off != null ? off.getName() : null;
-                    }
-                    if (name == null) name = rep.getUuid().toString().substring(0, 8);
+                    String name = names.size() > i ? names.get(i) : rep.getUuid().toString().substring(0, 8);
 
                     sm.setDisplayName("§f#" + (offset + i + 1) + " §7— §f" + name);
 
@@ -106,6 +118,8 @@ public final class CategoryTopGui extends AbstractGui {
 
                     head.setItemMeta(sm);
                     inventory.setItem(i, head);
+                    slotTargets.put(i, rep.getUuid());
+                    slotNames.put(i, name);
                 }
             });
         });
@@ -125,19 +139,13 @@ public final class CategoryTopGui extends AbstractGui {
 
         if (rawSlot < 0 || rawSlot >= 45) return;
         if (clicked == null || clicked.getType() != Material.PLAYER_HEAD) return;
+        if (!slotTargets.containsKey(rawSlot)) return;
 
-        SkullMeta meta = (SkullMeta) clicked.getItemMeta();
-        if (meta == null || meta.getOwningPlayer() == null) return;
-
-        UUID target = meta.getOwningPlayer().getUniqueId();
-        String name = meta.getOwningPlayer().getName();
-        if (name == null) name = service.getName(target);
-
-        final UUID finalTarget = target;
-        final String finalName = (name != null ? name : "Игрок");
+        UUID target = slotTargets.get(rawSlot);
+        String name = slotNames.get(rawSlot);
 
         player.closeInventory();
-        Bukkit.getScheduler().runTask(plugin, () -> plugin.getGuiService().openProfile(player, finalTarget, finalName));
+        Bukkit.getScheduler().runTask(plugin, () -> plugin.getGuiService().openProfile(player, target, name));
     }
 
     private String categoryRu(TopCategory c) {

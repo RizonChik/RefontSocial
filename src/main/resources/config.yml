@@ -1,5 +1,5 @@
 storage:
-  type: SQLITE # SQLITE | MYSQL | YAML
+  type: YAML # SQLITE | MYSQL | YAML
 
   sqlite:
     file: "data.db" # Файл SQLite в папке плагина
