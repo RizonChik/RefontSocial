@@ -41,3 +41,5 @@ help:
   - "%prefix%§f/rep top §7— топ по рейтингу"
   - "%prefix%§f/rep top score|likes|dislikes|votes §7— топ по категории"
   - "%prefix%§f/rep reload §7— перезагрузка (админ)"
+reasonInvalidForVote: "%prefix%§cВыбранная причина не подходит для этой оценки."
+

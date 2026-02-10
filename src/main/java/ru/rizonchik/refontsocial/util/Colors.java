@@ -6,8 +6,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class Colors {
+
+    private static final Pattern HEX_AMPERSAND = Pattern.compile("(?i)&#([0-9A-F]{6})");
+    private static final Pattern HEX_BRACKET = Pattern.compile("(?i)<#([0-9A-F]{6})>");
 
     private Colors() {
     }
@@ -40,6 +45,33 @@ public final class Colors {
     }
 
     public static String color(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
+        if (s == null || s.isEmpty()) return "";
+
+        String withHex = applyHexColors(s);
+        return ChatColor.translateAlternateColorCodes('&', withHex);
+    }
+
+    private static String applyHexColors(String input) {
+        if (input.indexOf('#') < 0) return input;
+
+        String out = replaceHex(input, HEX_BRACKET);
+        return replaceHex(out, HEX_AMPERSAND);
+    }
+
+    private static String replaceHex(String input, Pattern pattern) {
+        Matcher matcher = pattern.matcher(input);
+        StringBuffer out = new StringBuffer();
+
+        while (matcher.find()) {
+            String hex = matcher.group(1);
+            StringBuilder replacement = new StringBuilder("&x");
+            for (int i = 0; i < hex.length(); i++) {
+                replacement.append('&').append(hex.charAt(i));
+            }
+            matcher.appendReplacement(out, Matcher.quoteReplacement(replacement.toString()));
+        }
+
+        matcher.appendTail(out);
+        return out.toString();
     }
 }

@@ -11,6 +11,7 @@ public final class YamlUtil {
 
     private static YamlConfiguration MESSAGES;
     private static YamlConfiguration GUI;
+    private static YamlConfiguration TAGS;
 
     private YamlUtil() {
     }
@@ -32,6 +33,11 @@ public final class YamlUtil {
         GUI = load(f);
     }
 
+    public static void reloadTags(JavaPlugin plugin) {
+        File f = new File(plugin.getDataFolder(), "tags.yml");
+        TAGS = load(f);
+    }
+
     public static YamlConfiguration messages(JavaPlugin plugin) {
         if (MESSAGES == null) reloadMessages(plugin);
         return MESSAGES;
@@ -40,6 +46,11 @@ public final class YamlUtil {
     public static YamlConfiguration gui(JavaPlugin plugin) {
         if (GUI == null) reloadGui(plugin);
         return GUI;
+    }
+
+    public static YamlConfiguration tags(JavaPlugin plugin) {
+        if (TAGS == null) reloadTags(plugin);
+        return TAGS;
     }
 
     public static YamlConfiguration load(File file) {
@@ -59,6 +70,16 @@ public final class YamlUtil {
             if (file.getName().equalsIgnoreCase("gui.yml")) {
                 InputStreamReader reader = new InputStreamReader(
                         YamlUtil.class.getClassLoader().getResourceAsStream("gui.yml"),
+                        StandardCharsets.UTF_8
+                );
+                if (reader != null) {
+                    YamlConfiguration def = YamlConfiguration.loadConfiguration(reader);
+                    cfg.setDefaults(def);
+                }
+            }
+            if (file.getName().equalsIgnoreCase("tags.yml")) {
+                InputStreamReader reader = new InputStreamReader(
+                        YamlUtil.class.getClassLoader().getResourceAsStream("tags.yml"),
                         StandardCharsets.UTF_8
                 );
                 if (reader != null) {

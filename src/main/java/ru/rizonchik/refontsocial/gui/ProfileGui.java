@@ -112,7 +112,7 @@ public final class ProfileGui extends AbstractGui {
                         for (Map.Entry<String, Integer> e : topTagsFinal.entrySet()) {
                             String key = e.getKey();
                             int cnt = e.getValue();
-                            String display = plugin.getConfig().getString("reasons.tags." + key, key);
+                            String display = service.getReasonTagDisplay(key);
                             lore.add("§8• §f" + display + " §8x§7" + cnt);
                         }
                     }
@@ -149,7 +149,7 @@ public final class ProfileGui extends AbstractGui {
 
                                 String reason = e.getReason();
                                 if (reason != null && !reason.trim().isEmpty()) {
-                                    reason = plugin.getConfig().getString("reasons.tags." + reason, reason);
+                                    reason = service.getReasonTagDisplay(reason);
                                 } else {
                                     reason = "без причины";
                                 }

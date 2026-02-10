@@ -2,6 +2,7 @@ package ru.rizonchik.refontsocial.service;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.rizonchik.refontsocial.listener.InteractionTracker;
@@ -10,9 +11,11 @@ import ru.rizonchik.refontsocial.storage.TopCategory;
 import ru.rizonchik.refontsocial.storage.model.PlayerRep;
 import ru.rizonchik.refontsocial.util.Colors;
 import ru.rizonchik.refontsocial.util.NumberUtil;
+import ru.rizonchik.refontsocial.util.YamlUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -122,6 +125,66 @@ public final class ReputationService {
         int rank = storage.getRank(uuid);
         rankCache.put(uuid, new RankCacheEntry(rank, now));
         return rank;
+    }
+
+    public List<String> getReasonTagKeys(boolean like) {
+        return new ArrayList<>(loadReasonTags(like).keySet());
+    }
+
+    public boolean isReasonTagAllowed(String key, boolean like) {
+        if (key == null || key.trim().isEmpty()) return false;
+        return loadReasonTags(like).containsKey(key);
+    }
+
+    public String getReasonTagDisplay(String key) {
+        if (key == null || key.trim().isEmpty()) return "";
+
+        String display = loadReasonTags(true).get(key);
+        if (display != null) return Colors.color(display);
+
+        display = loadReasonTags(false).get(key);
+        if (display != null) return Colors.color(display);
+
+        ConfigurationSection legacy = plugin.getConfig().getConfigurationSection("reasons.tags");
+        if (legacy != null) {
+            String legacyDisplay = legacy.getString(key);
+            if (legacyDisplay != null && !legacyDisplay.trim().isEmpty()) return Colors.color(legacyDisplay);
+        }
+
+        return Colors.color(key);
+    }
+
+    private LinkedHashMap<String, String> loadReasonTags(boolean like) {
+        LinkedHashMap<String, String> out = new LinkedHashMap<>();
+
+        String root = like ? "tags.like" : "tags.dislike";
+        ConfigurationSection sec = YamlUtil.tags(plugin).getConfigurationSection(root);
+        if (sec != null) {
+            collectReasonTags(sec, out);
+        }
+
+        if (out.isEmpty()) {
+            ConfigurationSection legacy = plugin.getConfig().getConfigurationSection("reasons.tags");
+            if (legacy != null) {
+                collectReasonTags(legacy, out);
+            }
+        }
+
+        return out;
+    }
+
+    private void collectReasonTags(ConfigurationSection section, Map<String, String> out) {
+        for (String key : section.getKeys(false)) {
+            if (section.isConfigurationSection(key)) {
+                ConfigurationSection child = section.getConfigurationSection(key);
+                if (child != null) collectReasonTags(child, out);
+                continue;
+            }
+
+            String display = section.getString(key);
+            if (display == null || display.trim().isEmpty()) continue;
+            if (!out.containsKey(key)) out.put(key, display);
+        }
     }
 
     public List<PlayerRep> getTopCached(TopCategory category, int limit, int offset) {
@@ -235,6 +298,10 @@ public final class ReputationService {
         boolean requireReason = plugin.getConfig().getBoolean("reasons.requireReason", false);
         if (reasonTagKey == null && reasonsEnabled && requireReason) {
             sendMessageSync(voter, "reasonRequired");
+            return;
+        }
+        if (reasonTagKey != null && reasonsEnabled && !isReasonTagAllowed(reasonTagKey, like)) {
+            sendMessageSync(voter, "reasonInvalidForVote");
             return;
         }
 
@@ -378,7 +445,7 @@ public final class ReputationService {
                 }
 
                 if (reasonTagKey != null) {
-                    String display = plugin.getConfig().getString("reasons.tags." + reasonTagKey, reasonTagKey);
+                    String display = getReasonTagDisplay(reasonTagKey);
                     voter.sendMessage(Colors.msg(plugin, "reasonSaved", "%reason%", display));
                 }
             });

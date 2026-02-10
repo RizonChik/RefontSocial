@@ -2,7 +2,6 @@ package ru.rizonchik.refontsocial.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,7 +11,6 @@ import ru.rizonchik.refontsocial.util.Colors;
 import ru.rizonchik.refontsocial.util.ItemUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,17 +41,18 @@ public final class ReasonsGui extends AbstractGui {
 
         inventory = Bukkit.createInventory(null, size, title);
 
-        ConfigurationSection sec = plugin.getConfig().getConfigurationSection("reasons.tags");
-        if (sec != null) {
-            tagKeys.addAll(sec.getKeys(false));
-            Collections.sort(tagKeys);
+        tagKeys.clear();
+        tagKeys.addAll(service.getReasonTagKeys(like));
+        if (tagKeys.isEmpty()) {
+            service.vote(player, target, targetName, like);
+            return;
         }
 
         int slot = 0;
         for (String key : tagKeys) {
             if (slot >= 45) break;
 
-            String display = plugin.getConfig().getString("reasons.tags." + key, key);
+            String display = service.getReasonTagDisplay(key);
 
             ItemStack it = ItemUtil.fromGui(plugin, "reason_tag", "%reason%", display);
 

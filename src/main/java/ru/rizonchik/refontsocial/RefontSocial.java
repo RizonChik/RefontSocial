@@ -33,6 +33,7 @@ public final class RefontSocial extends JavaPlugin {
         saveDefaultConfig();
         YamlUtil.saveResourceIfNotExists(this, "messages.yml");
         YamlUtil.saveResourceIfNotExists(this, "gui.yml");
+        YamlUtil.saveResourceIfNotExists(this, "tags.yml");
 
         reloadPlugin();
 
@@ -116,6 +117,7 @@ public final class RefontSocial extends JavaPlugin {
 
         YamlUtil.reloadMessages(this);
         YamlUtil.reloadGui(this);
+        YamlUtil.reloadTags(this);
 
         if (seenListener != null) {
             HandlerList.unregisterAll(seenListener);
