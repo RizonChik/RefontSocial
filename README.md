@@ -95,7 +95,7 @@
 
 ```yaml
 storage:
-  type: SQLITE # SQLITE | MYSQL | YAML
+  type: YAML # SQLITE | MYSQL | YAML
 
   sqlite:
     file: "data.db" # Файл SQLite в папке плагина
@@ -162,15 +162,6 @@ reasons:
   requireReason: false # true = без выбора тега оценка не пройдет
   maxReasonLength: 24 # Сейчас используется только как лимит (для будущих расширений)
 
-  tags:
-    helpful: "§aпомог"
-    polite: "§aадекватный"
-    toxic: "§cтоксик"
-    scam: "§cобман"
-    rp: "§bRP-игрок"
-    trader: "§eторговец"
-    newbie: "§7новичок"
-
 profile:
   history:
     enabled: true # Показывать историю оценок в профиле
@@ -230,3 +221,4 @@ libraries:
     groupId: "com.mysql"
     artifactId: "mysql-connector-j"
     version: "8.0.33"
+
