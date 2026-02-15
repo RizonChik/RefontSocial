@@ -22,6 +22,14 @@ public final class ReputationCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("repreload")) {
+            return handleReload(sender);
+        }
+
+        if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
+            return handleReload(sender);
+        }
+
         if (!(sender instanceof Player)) {
             sender.sendMessage(Colors.msg(plugin, "playerOnly"));
             return true;
@@ -43,16 +51,6 @@ public final class ReputationCommand implements CommandExecutor, TabCompleter {
 
         if (sub.equals("help")) {
             Colors.sendList(player, plugin, "help");
-            return true;
-        }
-
-        if (sub.equals("reload")) {
-            if (!player.hasPermission("refontsocial.admin")) {
-                player.sendMessage(Colors.msg(plugin, "noPermission"));
-                return true;
-            }
-            plugin.reloadPlugin();
-            player.sendMessage(Colors.msg(plugin, "reloaded"));
             return true;
         }
 
@@ -129,8 +127,21 @@ public final class ReputationCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        boolean canUse = sender.hasPermission("refontsocial.use");
+        boolean canAdmin = sender.hasPermission("refontsocial.admin");
+
         if (args.length == 1) {
-            List<String> base = Arrays.asList("help", "top", "like", "dislike", "profile", "reload");
+            List<String> base = new ArrayList<>();
+            if (canUse) {
+                base.addAll(Arrays.asList("help", "top", "like", "dislike", "profile"));
+            }
+            if (canAdmin) {
+                base.add("reload");
+            }
+            if (base.isEmpty()) {
+                return Collections.emptyList();
+            }
+
             String p = args[0].toLowerCase(Locale.ROOT);
             return base.stream().filter(s -> s.startsWith(p)).collect(Collectors.toList());
         }
@@ -138,6 +149,10 @@ public final class ReputationCommand implements CommandExecutor, TabCompleter {
         if (args.length == 2 && (args[0].equalsIgnoreCase("like")
                 || args[0].equalsIgnoreCase("dislike")
                 || args[0].equalsIgnoreCase("profile"))) {
+            if (!canUse) {
+                return Collections.emptyList();
+            }
+
             String prefix = args[1].toLowerCase(Locale.ROOT);
             return Bukkit.getOnlinePlayers().stream()
                     .map(Player::getName)
@@ -147,6 +162,10 @@ public final class ReputationCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("top")) {
+            if (!canUse) {
+                return Collections.emptyList();
+            }
+
             String p = args[1].toLowerCase(Locale.ROOT);
             return Arrays.asList("score", "likes", "dislikes", "votes").stream()
                     .filter(s -> s.startsWith(p))
@@ -154,9 +173,23 @@ public final class ReputationCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("top")) {
-            return Collections.singletonList("страница");
+            if (!canUse) {
+                return Collections.emptyList();
+            }
+            return Collections.singletonList("page");
         }
 
         return Collections.emptyList();
+    }
+
+    private boolean handleReload(CommandSender sender) {
+        if (!sender.hasPermission("refontsocial.admin")) {
+            sender.sendMessage(Colors.msg(plugin, "noPermission"));
+            return true;
+        }
+
+        plugin.reloadPlugin();
+        sender.sendMessage(Colors.msg(plugin, "reloaded"));
+        return true;
     }
 }

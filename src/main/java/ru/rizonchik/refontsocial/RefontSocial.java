@@ -42,6 +42,9 @@ public final class RefontSocial extends JavaPlugin {
             getCommand("reputation").setExecutor(cmd);
             getCommand("reputation").setTabCompleter(cmd);
         }
+        if (getCommand("repreload") != null) {
+            getCommand("repreload").setExecutor(cmd);
+        }
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new ReputationExpansion(this).register();

@@ -1,5 +1,5 @@
 name: RefontSocial
-version: '${project.version}'
+version: '1.3'
 main: ru.rizonchik.refontsocial.RefontSocial
 api-version: '1.16'
 softdepend: [PlaceholderAPI]
@@ -9,6 +9,10 @@ commands:
     aliases: [rep, rating, social]
     description: Reputation / Social rating
     usage: /rep help
+  repreload:
+    description: Reload RefontSocial config/files
+    usage: /repreload
+    permission: refontsocial.admin
 
 permissions:
   refontsocial.use:
